@@ -48,6 +48,15 @@ DS.ActiveModelSerializer = DS.RESTSerializer.extend({
     key = attrs && attrs[key] || this.keyForAttribute(key);
 
     json[key] = value;
+  },
+
+  serializeIntoHash: function(data, type, record, options) {
+    var root = this.rootForType(type.typeKey);
+    data[root] = this.serialize(record, options);
+  },
+
+  rootForType: function(type) {
+    return Ember.String.decamelize(type);
   }
 });
 
