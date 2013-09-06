@@ -57,6 +57,11 @@ DS.ActiveModelSerializer = DS.RESTSerializer.extend({
 
   rootForType: function(type) {
     return Ember.String.decamelize(type);
+  },
+
+  modelTypeFromRoot: function(root) {
+    var camelized = Ember.String.camelize(root);
+    return Ember.String.singularize(camelized);
   }
 });
 

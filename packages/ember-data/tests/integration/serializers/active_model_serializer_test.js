@@ -74,3 +74,48 @@ test("normalize", function() {
     superMinions:   [1,2]
   });
 });
+
+test("extractSingle", function() {
+  env.container.register('adapter:superMinion', DS.ActiveModelAdapter);
+
+  var json_hash = {
+    super_framework: {id: "1", name: "Umber", super_minion_ids: [1], person_ids: []},
+    super_minions:   [{id: "1", name: "Squar"}]
+  };
+
+  var json = env.amsSerializer.extractSingle(env.store, SuperFramework, json_hash);
+
+  deepEqual(json, {
+    "id": "1",
+    "name": "Umber",
+    "people": [],
+    "superMinions": [1]
+  });
+
+  env.store.find("superMinion", 1).then(async(function(minion){
+    equal(minion.get('name'), "Squar");
+  }));
+});
+
+test("extractArray", function() {
+  env.container.register('adapter:superMinion', DS.ActiveModelAdapter);
+
+  var json_hash = {
+    super_frameworks: [{id: "1", name: "Umber", super_minion_ids: [1], person_ids: []}],
+    super_minions:    [{id: "1", name: "Squar"}]
+  };
+
+  var array = env.amsSerializer.extractArray(env.store, SuperFramework, json_hash);
+
+  deepEqual(array, [{
+    "id": "1",
+    "name": "Umber",
+    "people": [],
+    "superMinions": [1]
+  }]);
+
+  env.store.find("superMinion", 1).then(async(function(minion){
+    equal(minion.get('name'), "Squar");
+  }));
+});
+
